@@ -187,6 +187,24 @@ namespace poic_2408.Properties {
         }
         
         /// <summary>
+        ///   一部画像の読み込みに失敗しました に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string MESS_ERROR14 {
+            get {
+                return ResourceManager.GetString("MESS_ERROR14", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   設定の保存に失敗しました に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string MESS_ERROR15 {
+            get {
+                return ResourceManager.GetString("MESS_ERROR15", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   文字認識に失敗しました に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string MESS_ERROR2 {
@@ -255,6 +273,15 @@ namespace poic_2408.Properties {
         internal static string MESS_ERROR9 {
             get {
                 return ResourceManager.GetString("MESS_ERROR9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   同じ名前のファイルが存在しています\n上書きしてもよろしいですか に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string MESS_FILESAVE {
+            get {
+                return ResourceManager.GetString("MESS_FILESAVE", resourceCulture);
             }
         }
         
@@ -363,6 +390,15 @@ namespace poic_2408.Properties {
         internal static string STRING_OBSERVATION {
             get {
                 return ResourceManager.GetString("STRING_OBSERVATION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   上書きの確認 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string STRING_OVERWRITECONF {
+            get {
+                return ResourceManager.GetString("STRING_OVERWRITECONF", resourceCulture);
             }
         }
         

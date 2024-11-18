@@ -27,7 +27,6 @@
         <ProjectReference Include="..\..\PluginBase_Input\PluginBase_Input\PluginBase_Input.csproj" />
         <ProjectReference Include="..\..\PluginBase_Scenario\PluginBase_Scenario\PluginBase_Scenario.csproj" />
 		<ProjectReference Include="..\..\PluginBase_VideoCapture\PluginBase_VideoCapture\PluginBase_VideoCapture.csproj" />
-		<ProjectReference Include="..\..\pokenaeBaseClass\pokenaeBaseClass\pokenaeBaseClass.csproj" />
 		<ProjectReference Include="..\..\pokenaeLibrary\pokenaeLibrary\pokenaeLibrary.csproj" />
   </ItemGroup>
 

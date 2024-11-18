@@ -27,8 +27,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginImageProcessing_Trimm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InputDestination", "..\InputDestination\InputDestination\InputDestination.csproj", "{5B864A08-0A0F-45DA-A2F8-F2D34B181425}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pokenaeBaseClass", "..\pokenaeBaseClass\pokenaeBaseClass\pokenaeBaseClass.csproj", "{060E95F4-D6CC-4A00-AA0C-5F83FF9FBFD9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pokenaeLibrary", "..\pokenaeLibrary\pokenaeLibrary\pokenaeLibrary.csproj", "{B016B11E-5E61-4866-AC9B-751CBD7FA2A9}"
 EndProject
 Global
@@ -85,10 +83,6 @@ Global
 		{5B864A08-0A0F-45DA-A2F8-F2D34B181425}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B864A08-0A0F-45DA-A2F8-F2D34B181425}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B864A08-0A0F-45DA-A2F8-F2D34B181425}.Release|Any CPU.Build.0 = Release|Any CPU
-		{060E95F4-D6CC-4A00-AA0C-5F83FF9FBFD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{060E95F4-D6CC-4A00-AA0C-5F83FF9FBFD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{060E95F4-D6CC-4A00-AA0C-5F83FF9FBFD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{060E95F4-D6CC-4A00-AA0C-5F83FF9FBFD9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B016B11E-5E61-4866-AC9B-751CBD7FA2A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B016B11E-5E61-4866-AC9B-751CBD7FA2A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B016B11E-5E61-4866-AC9B-751CBD7FA2A9}.Release|Any CPU.ActiveCfg = Release|Any CPU

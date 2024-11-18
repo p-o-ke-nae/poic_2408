@@ -4,7 +4,6 @@ using PluginBase_Input;
 using System.Security.Policy;
 using InputDestination;
 using PluginBase_ImageRecognition;
-using pokenaeBaseClass;
 using PluginBase_CharacterRecognition;
 using PluginBase_ImageProcessing;
 using System.Drawing.Text;
@@ -15,6 +14,7 @@ using System.Resources;
 using System.Text.RegularExpressions;
 using System.Data;
 using pokenaeLibrary;
+using System.Net;
 
 namespace poic_2408
 {
@@ -124,6 +124,15 @@ namespace poic_2408
         /// 実FPSの平均値を格納
         /// </summary>
         int _reFPS = 0;
+
+        #region 使用するインターフェース
+        IPNWebRequest _pNWebRequest;
+        IPNJsonExtensions _pNJsonExtensions;
+        IList<IPNImageExtensions> _pNImageExtensionses;
+        IPNPluginExtensions _pNPluginExtensions;
+
+        #endregion
+
         #endregion
 
         #region プロパティ
@@ -232,6 +241,11 @@ namespace poic_2408
         public MainForm()
         {
             InitializeComponent();
+
+            _pNWebRequest = new PNHttpRequest();
+            _pNJsonExtensions = new PNJsonExtensions();
+            _pNImageExtensionses = new List<IPNImageExtensions>() { new PNImageGoogleDrive()};
+            _pNPluginExtensions = new PNPluginExtensions();
         }
 
         #region 入力インターフェースの実装
@@ -294,8 +308,9 @@ namespace poic_2408
             }
             catch
             {
-                _timerErrorMessage = string.Format(Properties.Resources.MESS_ERROR7, "メインツール");
-                throw;
+                //_timerErrorMessage = string.Format(Properties.Resources.MESS_ERROR7, "メインツール");
+                //throw;
+                //TODO: メインツールが無い場合，単体で意味なく動かせるのかエラーで止めるのか検討する
             }
         }
 
@@ -316,8 +331,9 @@ namespace poic_2408
             try
             {
                 //映像源のプラグインの読込
-                _plugins_VideoCapture = PNBase_Plugin.LoadPlugins<IVideoCapture>(CharConstants.sPLUGIN_VIDEOCAPTURE_PATH);
+                _plugins_VideoCapture = _pNPluginExtensions.LoadPlugins<IVideoCapture>(CharConstants.sPLUGIN_VIDEOCAPTURE_PATH);
                 comboBoxPluginVideoCapture.Items.Clear();
+                tabControlPluginVideoCapture.TabPages.Clear();
                 foreach (var item in _plugins_VideoCapture)
                 {
                     comboBoxPluginVideoCapture.Items.Add(new ComboItem() { Name = item.Name, ID = item.ID });
@@ -325,7 +341,9 @@ namespace poic_2408
                 }
 
                 //画像認識のプラグインの読込
-                _plugins_ImageRecognition = PNBase_Plugin.LoadPlugins<IImageRecognition>(CharConstants.sPLUGIN_IMAGERECOGNITION_PATH);
+                _plugins_ImageRecognition = _pNPluginExtensions.LoadPlugins<IImageRecognition>(CharConstants.sPLUGIN_IMAGERECOGNITION_PATH);
+                comboBoxPluginImageRecognition.Items.Clear();
+                tabControlPluginImageRecognition.TabPages.Clear();
                 foreach (var item in _plugins_ImageRecognition)
                 {
                     comboBoxPluginImageRecognition.Items.Add(new ComboItem() { Name = item.Name, ID = item.ID });
@@ -333,21 +351,24 @@ namespace poic_2408
                 }
 
                 //文字認識のプラグインの読込
-                _plugins_CharacterRecognition = PNBase_Plugin.LoadPlugins<ICharacterRecognition>(CharConstants.sPLUGIN_CHARACTERRECOGNITION_PATH);
+                _plugins_CharacterRecognition = _pNPluginExtensions.LoadPlugins<ICharacterRecognition>(CharConstants.sPLUGIN_CHARACTERRECOGNITION_PATH);
+                comboBoxPluginCharacterRecognition.Items.Clear();
+                tabControlPluginCharacterRecognition.TabPages.Clear();
                 foreach (var item in _plugins_CharacterRecognition)
                 {
                     comboBoxPluginCharacterRecognition.Items.Add(new ComboItem() { Name = item.Name, ID = item.ID });
                 }
 
                 //画像処理のプラグインの読込
-                _plugins_ImageProcessing = PNBase_Plugin.LoadPlugins<IImageProcessing>(CharConstants.sPLUGIN_IMAGEPROCESSING_PATH);
+                _plugins_ImageProcessing = _pNPluginExtensions.LoadPlugins<IImageProcessing>(CharConstants.sPLUGIN_IMAGEPROCESSING_PATH);
+                tabControlPluginImageProcessing.TabPages.Clear();
                 foreach (var item in _plugins_ImageProcessing)
                 {
                     item.SetUp(this.tabControlPluginImageProcessing);
                 }
 
                 //シナリオプラグインの読込
-                var _plugins_Scenario = PNBase_Plugin.LoadPlugins<IScenario>(CharConstants.sPLUGIN_SCENARIO_PATH);
+                var _plugins_Scenario = _pNPluginExtensions.LoadPlugins<IScenario>(CharConstants.sPLUGIN_SCENARIO_PATH);
                 if (_plugins_Scenario != null)
                 {
                     foreach (var item in _plugins_Scenario)
@@ -813,50 +834,57 @@ namespace poic_2408
         {
             var result = new Settings();
 
-            //映像源プラグインの設定の保存
-            result.UsePluginID_VideoCapture = UsepluginID_VideoCapture;
-            foreach (var item in _plugins_VideoCapture)
+            try
             {
-                result.SettingsJson_VideoCapture.Add(item.GetSettingsJson());
-            }
-
-            //画像認識プラグインの設定の保存
-            result.UsePluginID_ImageRecognition = UsepluginID_ImageRecognition;
-            foreach (var item in _plugins_ImageRecognition)
-            {
-                result.SettingsJson_ImageRecognition.Add(item.GetSettingsJson());
-            }
-
-            //画像処理プラグインの設定の保存
-            foreach (var item in _plugins_ImageProcessing)
-            {
-                result.SettingsJson_ImageProcessing.Add(item.GetSettingsJson());
-            }
-
-            //文字認識プラグインの設定の保存
-            foreach (var crs in CRSList)
-            {
-                foreach (var item in _plugins_CharacterRecognition)
+                //映像源プラグインの設定の保存
+                result.UsePluginID_VideoCapture = UsepluginID_VideoCapture;
+                foreach (var item in _plugins_VideoCapture)
                 {
-                    if (crs.PluginID == item.ID)
+                    result.SettingsJson_VideoCapture.Add(item.GetSettingsJson());
+                }
+
+                //画像認識プラグインの設定の保存
+                result.UsePluginID_ImageRecognition = UsepluginID_ImageRecognition;
+                foreach (var item in _plugins_ImageRecognition)
+                {
+                    result.SettingsJson_ImageRecognition.Add(item.GetSettingsJson());
+                }
+
+                //画像処理プラグインの設定の保存
+                foreach (var item in _plugins_ImageProcessing)
+                {
+                    result.SettingsJson_ImageProcessing.Add(item.GetSettingsJson());
+                }
+
+                //文字認識プラグインの設定の保存
+                foreach (var crs in CRSList)
+                {
+                    foreach (var item in _plugins_CharacterRecognition)
                     {
-                        crs.PluginSettingsJson = item.GetSettingsJson();
+                        if (crs.PluginID == item.ID)
+                        {
+                            crs.PluginSettingsJson = item.GetSettingsJson();
+                        }
                     }
                 }
+                //文字認識リストの設定の保存
+                result.CRSListJson = JsonConvert.SerializeObject(CRSList);
+
+                //キャプチャNo
+                result.CaptureNo = this.CaptureNo;
+                //最大キャプチャ数
+                result.CaptureImageListMax = this.CaptureImageListMax;
+
+                //FPS
+                result.FPS = this.FPS;
+
+                //設定ファイル
+                result.SettingsDownloadAPIURL = this.SettingsDownloadAPIURL;
             }
-            //文字認識リストの設定の保存
-            result.CRSListJson = JsonExtensions.SerializeToJson(CRSList);
-
-            //キャプチャNo
-            result.CaptureNo = this.CaptureNo;
-            //最大キャプチャ数
-            result.CaptureImageListMax = this.CaptureImageListMax;
-
-            //FPS
-            result.FPS = this.FPS;
-
-            //設定ファイル
-            result.SettingsDownloadAPIURL = this.SettingsDownloadAPIURL;
+            catch
+            {
+                MessageBox.Show(_messForm, Properties.Resources.MESS_ERROR15);
+            }
 
             return result;
         }
@@ -913,7 +941,7 @@ namespace poic_2408
                     }
 
                     //文字認識リスト
-                    var ocrList = JsonExtensions.DeserializeFromJson<List<CharacterRecgnitionSettings>>(settings.CRSListJson);
+                    var ocrList = JsonConvert.DeserializeObject<List<CharacterRecgnitionSettings>>(settings.CRSListJson);
 
                     if (ocrList != null)
                     {
@@ -1107,25 +1135,37 @@ namespace poic_2408
         {
             try
             {
-                IPNWebRequest pNWebRequest = new PNHttpRequest();
-                IPNJsonExtensions pNJsonExtensions = new PNJsonExtensions();
+                var url = SettingsDownloadAPIURL;
+                var json = await _pNWebRequest.GetRequest(url, 30000);
 
-                var url = SettingsDownloadAPIURL + "?id=" + id;
-                var json = await pNWebRequest.GetRequest(url, 30000);
-
-                var settingsresponse = JsonExtensions.DeserializeFromJson<SettingsResponse>(json);
+                var settingsresponse = JsonConvert.DeserializeObject<SettingsResponse>(json);
                 if (settingsresponse != null)
                 {
-                    var isSave = false;
-                    if(file)
-                    if (saveflg == true)
+                    var filePath = settingsresponse.SettingsPath; 
+                    if(IsFileSave(filePath))
                     {
-                        //保存したとき
-                        SettingsImgSave();
+                        //設定ファイルを保存する
+                        _pNJsonExtensions.SerializeToFile<Settings>(settingsresponse.Settings, filePath);
 
-                        SettingsComboInto();
+                        //画像を保存する
+                        var isError = false;
+                        foreach(var item in settingsresponse.Images)
+                        {
+                            try
+                            {
+                                ImageSaveFromURL(item);
+                            }
+                            catch
+                            {
+                                isError = true;
+                            }
+                        }
+
+                        if(isError)
+                        {
+                            MessageBox.Show(_messForm, Properties.Resources.MESS_ERROR14);
+                        }
                     }
-
                 }
                 else
                 {
@@ -1134,11 +1174,65 @@ namespace poic_2408
             }
             catch
             {
-                MessageBox.Show(_messForm, "設定の読み込みに失敗しました．");
+                MessageBox.Show(_messForm, Properties.Resources.MESS_ERROR13);
             }
         }
 
+
+
         #endregion
+
+        #endregion
+
+        #region ファイルの保存やダウンロード
+        /// <summary>
+        /// 指定されたパスにファイルを保存するかメッセージボックスで確認
+        /// </summary>
+        /// <param name="filepath"></param>
+        /// <returns></returns>
+        private bool IsFileSave(string filepath)
+        {
+            //ファイルの上書きをするか確認
+            if (File.Exists(filepath))
+            {
+                DialogResult MSResult = MessageBox.Show(_messForm, Properties.Resources.MESS_FILESAVE, Properties.Resources.STRING_OVERWRITECONF, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+
+                if (MSResult != System.Windows.Forms.DialogResult.Yes)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 引数のURLより画像を読み込み保存する
+        /// </summary>
+        /// <param name="image"></param>
+        private async void ImageSaveFromURL(IPNImageExtensions.ImageURL image)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(image.Url))
+                {
+                    var isSave = false;
+                    foreach(var item in _pNImageExtensionses)
+                    {
+                        isSave = await item.ImageSave(image);
+
+                        if(isSave)
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+        }
 
         #endregion
 
@@ -1169,7 +1263,7 @@ namespace poic_2408
             }
 
             //設定の読込
-            var settings = JsonExtensions.DeserializeFromFile<Settings>(PNBase.ExePath + "config.json");
+            var settings = _pNJsonExtensions.DeserializeFromFile<Settings>(CharConstants.sCONFIG_PATH);
             if (settings != null)
             {
                 Load_Settings(settings);
@@ -1388,7 +1482,7 @@ namespace poic_2408
         {
             if (IsClose)
             {
-                JsonExtensions.SerializeToFile<MainForm.Settings>(SaveSettings(), PNBase.ExePath + "config.json");
+                _pNJsonExtensions.SerializeToFile<MainForm.Settings>(SaveSettings(), CharConstants.sCONFIG_PATH);
             }
             else
             {
@@ -1619,19 +1713,12 @@ namespace poic_2408
         class SettingsResponse
         {
             [JsonProperty("settings")]
-            public string Settings { get; set; }
+            public Settings Settings { get; set; }
             [JsonProperty("settingspath")]
             public string SettingsPath { get; set; }
             [JsonProperty("images")]
-            public List<ImageSettings> Images { get; set; }
+            public List<IPNImageExtensions.ImageURL> Images { get; set; }
             
-            public class ImageSettings
-            {
-                [JsonProperty("path")]
-                public string Path { get; set; }
-                [JsonProperty("url")]
-                public string Url { get; set; }
-            }
         }
 
         #endregion

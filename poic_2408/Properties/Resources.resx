@@ -159,6 +159,12 @@
   <data name="MESS_ERROR13" xml:space="preserve">
     <value>設定を読み込めませんでした</value>
   </data>
+  <data name="MESS_ERROR14" xml:space="preserve">
+    <value>一部画像の読み込みに失敗しました</value>
+  </data>
+  <data name="MESS_ERROR15" xml:space="preserve">
+    <value>設定の保存に失敗しました</value>
+  </data>
   <data name="MESS_ERROR2" xml:space="preserve">
     <value>文字認識に失敗しました</value>
   </data>
@@ -182,6 +188,9 @@
   </data>
   <data name="MESS_ERROR9" xml:space="preserve">
     <value>プラグインの設定を読み込めませんでした</value>
+  </data>
+  <data name="MESS_FILESAVE" xml:space="preserve">
+    <value>同じ名前のファイルが存在しています\n上書きしてもよろしいですか</value>
   </data>
   <data name="STRING_BOTTOM" xml:space="preserve">
     <value>Bottom</value>
@@ -218,6 +227,9 @@
   </data>
   <data name="STRING_OBSERVATION" xml:space="preserve">
     <value>観測</value>
+  </data>
+  <data name="STRING_OVERWRITECONF" xml:space="preserve">
+    <value>上書きの確認</value>
   </data>
   <data name="STRING_REFPS" xml:space="preserve">
     <value>実FPS</value>
