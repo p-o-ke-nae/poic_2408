@@ -32,6 +32,13 @@
             comboBoxPluginVideoCapture = new ComboBox();
             tabControlOption = new TabControl();
             tabPageSettings = new TabPage();
+            labelSettingsSave = new Label();
+            textBoxSettingsName = new TextBox();
+            buttonSettingsSave = new Button();
+            labelSettingsList = new Label();
+            comboBoxSettingsList = new ComboBox();
+            labelDLID = new Label();
+            textBoxSettingDownloadID = new TextBox();
             buttonSettingDownload = new Button();
             tabPageObservation = new TabPage();
             buttonScreenShotMatch = new Button();
@@ -85,7 +92,7 @@
             numericUpDownFPS = new NumericUpDown();
             labelFPS = new Label();
             checkBoxTopMost = new CheckBox();
-            textBoxSettingDownloadID = new TextBox();
+            buttonReload = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBoxViewer).BeginInit();
             tabControlOption.SuspendLayout();
             tabPageSettings.SuspendLayout();
@@ -135,6 +142,13 @@
             // 
             // tabPageSettings
             // 
+            tabPageSettings.Controls.Add(buttonReload);
+            tabPageSettings.Controls.Add(labelSettingsSave);
+            tabPageSettings.Controls.Add(textBoxSettingsName);
+            tabPageSettings.Controls.Add(buttonSettingsSave);
+            tabPageSettings.Controls.Add(labelSettingsList);
+            tabPageSettings.Controls.Add(comboBoxSettingsList);
+            tabPageSettings.Controls.Add(labelDLID);
             tabPageSettings.Controls.Add(textBoxSettingDownloadID);
             tabPageSettings.Controls.Add(buttonSettingDownload);
             tabPageSettings.Location = new Point(4, 24);
@@ -145,12 +159,73 @@
             tabPageSettings.Text = "設定";
             tabPageSettings.UseVisualStyleBackColor = true;
             // 
+            // labelSettingsSave
+            // 
+            labelSettingsSave.AutoSize = true;
+            labelSettingsSave.Location = new Point(6, 53);
+            labelSettingsSave.Name = "labelSettingsSave";
+            labelSettingsSave.Size = new Size(43, 15);
+            labelSettingsSave.TabIndex = 6;
+            labelSettingsSave.Text = "設定名";
+            // 
+            // textBoxSettingsName
+            // 
+            textBoxSettingsName.Location = new Point(55, 51);
+            textBoxSettingsName.Name = "textBoxSettingsName";
+            textBoxSettingsName.Size = new Size(166, 23);
+            textBoxSettingsName.TabIndex = 1;
+            // 
+            // buttonSettingsSave
+            // 
+            buttonSettingsSave.Location = new Point(146, 79);
+            buttonSettingsSave.Name = "buttonSettingsSave";
+            buttonSettingsSave.Size = new Size(75, 23);
+            buttonSettingsSave.TabIndex = 2;
+            buttonSettingsSave.Text = "保存";
+            buttonSettingsSave.UseVisualStyleBackColor = true;
+            buttonSettingsSave.Click += buttonSettingsSave_Click;
+            // 
+            // labelSettingsList
+            // 
+            labelSettingsList.AutoSize = true;
+            labelSettingsList.Location = new Point(3, 3);
+            labelSettingsList.Name = "labelSettingsList";
+            labelSettingsList.Size = new Size(55, 15);
+            labelSettingsList.TabIndex = 5;
+            labelSettingsList.Text = "設定一覧";
+            // 
+            // comboBoxSettingsList
+            // 
+            comboBoxSettingsList.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxSettingsList.FormattingEnabled = true;
+            comboBoxSettingsList.Location = new Point(6, 21);
+            comboBoxSettingsList.Name = "comboBoxSettingsList";
+            comboBoxSettingsList.Size = new Size(215, 23);
+            comboBoxSettingsList.TabIndex = 0;
+            comboBoxSettingsList.SelectedIndexChanged += comboBoxSettingsList_SelectedIndexChanged;
+            // 
+            // labelDLID
+            // 
+            labelDLID.AutoSize = true;
+            labelDLID.Location = new Point(6, 111);
+            labelDLID.Name = "labelDLID";
+            labelDLID.Size = new Size(32, 15);
+            labelDLID.TabIndex = 7;
+            labelDLID.Text = "DLID";
+            // 
+            // textBoxSettingDownloadID
+            // 
+            textBoxSettingDownloadID.Location = new Point(55, 108);
+            textBoxSettingDownloadID.Name = "textBoxSettingDownloadID";
+            textBoxSettingDownloadID.Size = new Size(166, 23);
+            textBoxSettingDownloadID.TabIndex = 3;
+            // 
             // buttonSettingDownload
             // 
-            buttonSettingDownload.Location = new Point(149, 6);
+            buttonSettingDownload.Location = new Point(146, 137);
             buttonSettingDownload.Name = "buttonSettingDownload";
             buttonSettingDownload.Size = new Size(75, 23);
-            buttonSettingDownload.TabIndex = 0;
+            buttonSettingDownload.TabIndex = 4;
             buttonSettingDownload.Text = "ダウンロード";
             buttonSettingDownload.UseVisualStyleBackColor = true;
             buttonSettingDownload.Click += buttonSettingDownload_Click;
@@ -697,12 +772,15 @@
             checkBoxTopMost.UseVisualStyleBackColor = true;
             checkBoxTopMost.CheckedChanged += checkBoxTopMost_CheckedChanged;
             // 
-            // textBoxSettingDownloadID
+            // buttonReload
             // 
-            textBoxSettingDownloadID.Location = new Point(6, 6);
-            textBoxSettingDownloadID.Name = "textBoxSettingDownloadID";
-            textBoxSettingDownloadID.Size = new Size(137, 23);
-            textBoxSettingDownloadID.TabIndex = 1;
+            buttonReload.Location = new Point(65, 79);
+            buttonReload.Name = "buttonReload";
+            buttonReload.Size = new Size(75, 23);
+            buttonReload.TabIndex = 8;
+            buttonReload.Text = "再読込";
+            buttonReload.UseVisualStyleBackColor = true;
+            buttonReload.Click += buttonReload_Click;
             // 
             // MainForm
             // 
@@ -808,5 +886,12 @@
         private CheckBox checkBoxTopMost;
         private Button buttonSettingDownload;
         private TextBox textBoxSettingDownloadID;
+        private Label labelDLID;
+        private Label labelSettingsList;
+        private ComboBox comboBoxSettingsList;
+        private Label labelSettingsSave;
+        private TextBox textBoxSettingsName;
+        private Button buttonSettingsSave;
+        private Button buttonReload;
     }
 }

@@ -129,6 +129,12 @@
   <data name="BUTTON_OVERWRITE" xml:space="preserve">
     <value>上書き</value>
   </data>
+  <data name="BUTTON_RELOAD" xml:space="preserve">
+    <value>再読込</value>
+  </data>
+  <data name="BUTTON_SAVE" xml:space="preserve">
+    <value>保存</value>
+  </data>
   <data name="BUTTON_SCREENSHOT" xml:space="preserve">
     <value>PrtSc</value>
   </data>
@@ -138,59 +144,51 @@
   <data name="BUTTON_STARTSTOP" xml:space="preserve">
     <value>開始/停止</value>
   </data>
+  <data name="FORMAT_ERROR" xml:space="preserve">
+    <value>{0}でエラーが発生しました</value>
+  </data>
+  <data name="FORMAT_INPUT" xml:space="preserve">
+    <value>{0}を入力してください</value>
+  </data>
   <data name="FORMAT_KEYVALUE" xml:space="preserve">
     <value>{0}:{1}</value>
   </data>
   <data name="FORMAT_RATE" xml:space="preserve">
     <value>{0}%</value>
   </data>
+  <data name="FORMAT_READERROR" xml:space="preserve">
+    <value>{0}の読み込み</value>
+  </data>
   <data name="MESS_ERROR1" xml:space="preserve">
-    <value>画像認識に失敗しました</value>
-  </data>
-  <data name="MESS_ERROR10" xml:space="preserve">
-    <value>キー名を入力してください</value>
-  </data>
-  <data name="MESS_ERROR11" xml:space="preserve">
-    <value>ビューアの表示か後処理でエラーが発生しました</value>
-  </data>
-  <data name="MESS_ERROR12" xml:space="preserve">
-    <value>プラグインを読み込めませんでした</value>
-  </data>
-  <data name="MESS_ERROR13" xml:space="preserve">
-    <value>設定を読み込めませんでした</value>
-  </data>
-  <data name="MESS_ERROR14" xml:space="preserve">
-    <value>一部画像の読み込みに失敗しました</value>
-  </data>
-  <data name="MESS_ERROR15" xml:space="preserve">
-    <value>設定の保存に失敗しました</value>
-  </data>
-  <data name="MESS_ERROR2" xml:space="preserve">
-    <value>文字認識に失敗しました</value>
-  </data>
-  <data name="MESS_ERROR3" xml:space="preserve">
     <value>画像認識後の処理を実行できませんでした</value>
   </data>
-  <data name="MESS_ERROR4" xml:space="preserve">
-    <value>画像のキャプチャに失敗しました</value>
+  <data name="MESS_ERROR2" xml:space="preserve">
+    <value>画像のキャプチャ</value>
   </data>
-  <data name="MESS_ERROR5" xml:space="preserve">
+  <data name="MESS_ERROR3" xml:space="preserve">
     <value>画像認識後の処理が正常に実装されていません</value>
   </data>
-  <data name="MESS_ERROR6" xml:space="preserve">
-    <value>画像処理に失敗しました</value>
-  </data>
-  <data name="MESS_ERROR7" xml:space="preserve">
+  <data name="MESS_ERROR4" xml:space="preserve">
     <value>{0}を取得できませんでした</value>
   </data>
-  <data name="MESS_ERROR8" xml:space="preserve">
+  <data name="MESS_ERROR5" xml:space="preserve">
     <value>画像がセットされていません</value>
   </data>
-  <data name="MESS_ERROR9" xml:space="preserve">
+  <data name="MESS_ERROR6" xml:space="preserve">
     <value>プラグインの設定を読み込めませんでした</value>
   </data>
+  <data name="MESS_ERROR7" xml:space="preserve">
+    <value>ビューアの表示か後処理</value>
+  </data>
+  <data name="MESS_ERROR8" xml:space="preserve">
+    <value>一部画像の読み込みに失敗しました</value>
+  </data>
+  <data name="MESS_ERROR9" xml:space="preserve">
+    <value>設定の保存</value>
+  </data>
   <data name="MESS_FILESAVE" xml:space="preserve">
-    <value>同じ名前のファイルが存在しています\n上書きしてもよろしいですか</value>
+    <value>同じ名前のファイルが存在しています
+上書きしてもよろしいですか</value>
   </data>
   <data name="STRING_BOTTOM" xml:space="preserve">
     <value>Bottom</value>
@@ -203,6 +201,9 @@
   </data>
   <data name="STRING_DEFAULT" xml:space="preserve">
     <value>デフォルト</value>
+  </data>
+  <data name="STRING_DLID" xml:space="preserve">
+    <value>DLID</value>
   </data>
   <data name="STRING_FPS" xml:space="preserve">
     <value>FPS</value>
@@ -231,6 +232,9 @@
   <data name="STRING_OVERWRITECONF" xml:space="preserve">
     <value>上書きの確認</value>
   </data>
+  <data name="STRING_PLUGIN" xml:space="preserve">
+    <value>プラグイン</value>
+  </data>
   <data name="STRING_REFPS" xml:space="preserve">
     <value>実FPS</value>
   </data>
@@ -239,6 +243,15 @@
   </data>
   <data name="STRING_SETTINGS" xml:space="preserve">
     <value>設定</value>
+  </data>
+  <data name="STRING_SETTINGSLIST" xml:space="preserve">
+    <value>設定一覧</value>
+  </data>
+  <data name="STRING_SETTINGSNAME" xml:space="preserve">
+    <value>設定名</value>
+  </data>
+  <data name="STRING_SYSTEMSETTINGS" xml:space="preserve">
+    <value>システム設定</value>
   </data>
   <data name="STRING_TOP" xml:space="preserve">
     <value>Top</value>

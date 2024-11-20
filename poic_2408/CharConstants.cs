@@ -53,7 +53,7 @@ namespace poic_2408
         /// シナリオプラグインの格納パス
         /// </summary>
         public static string sPLUGIN_SCENARIO_PATH = sINPUTDIRPATH + "Plugin_Scenario\\";
-        
+
         /// <summary>
         /// 画像フォルダのパス
         /// </summary>
@@ -66,6 +66,10 @@ namespace poic_2408
         /// 起動時の設定ファイルのパス
         /// </summary>
         public static string sCONFIG_PATH = sINPUTDIRPATH + "config.json";
+        /// <summary>
+        /// 設定ファイルとそのディレクトリのフォーマット
+        /// </summary>
+        public static string sSETTINGS_FORMATPATH = sINPUTDIRPATH + "settings\\{0}\\{0}.json";
 
     }
 }

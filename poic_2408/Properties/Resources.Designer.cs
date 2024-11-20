@@ -97,6 +97,24 @@ namespace poic_2408.Properties {
         }
         
         /// <summary>
+        ///   再読込 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string BUTTON_RELOAD {
+            get {
+                return ResourceManager.GetString("BUTTON_RELOAD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   保存 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string BUTTON_SAVE {
+            get {
+                return ResourceManager.GetString("BUTTON_SAVE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   PrtSc に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string BUTTON_SCREENSHOT {
@@ -124,6 +142,24 @@ namespace poic_2408.Properties {
         }
         
         /// <summary>
+        ///   {0}でエラーが発生しました に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string FORMAT_ERROR {
+            get {
+                return ResourceManager.GetString("FORMAT_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   {0}を入力してください に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string FORMAT_INPUT {
+            get {
+                return ResourceManager.GetString("FORMAT_INPUT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   {0}:{1} に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string FORMAT_KEYVALUE {
@@ -142,7 +178,16 @@ namespace poic_2408.Properties {
         }
         
         /// <summary>
-        ///   画像認識に失敗しました に類似しているローカライズされた文字列を検索します。
+        ///   {0}の読み込み に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string FORMAT_READERROR {
+            get {
+                return ResourceManager.GetString("FORMAT_READERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   画像認識後の処理を実行できませんでした に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string MESS_ERROR1 {
             get {
@@ -151,61 +196,7 @@ namespace poic_2408.Properties {
         }
         
         /// <summary>
-        ///   キー名を入力してください に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string MESS_ERROR10 {
-            get {
-                return ResourceManager.GetString("MESS_ERROR10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   ビューアの表示か後処理でエラーが発生しました に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string MESS_ERROR11 {
-            get {
-                return ResourceManager.GetString("MESS_ERROR11", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   プラグインを読み込めませんでした に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string MESS_ERROR12 {
-            get {
-                return ResourceManager.GetString("MESS_ERROR12", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   設定を読み込めませんでした に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string MESS_ERROR13 {
-            get {
-                return ResourceManager.GetString("MESS_ERROR13", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   一部画像の読み込みに失敗しました に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string MESS_ERROR14 {
-            get {
-                return ResourceManager.GetString("MESS_ERROR14", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   設定の保存に失敗しました に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        internal static string MESS_ERROR15 {
-            get {
-                return ResourceManager.GetString("MESS_ERROR15", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   文字認識に失敗しました に類似しているローカライズされた文字列を検索します。
+        ///   画像のキャプチャ に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string MESS_ERROR2 {
             get {
@@ -214,7 +205,7 @@ namespace poic_2408.Properties {
         }
         
         /// <summary>
-        ///   画像認識後の処理を実行できませんでした に類似しているローカライズされた文字列を検索します。
+        ///   画像認識後の処理が正常に実装されていません に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string MESS_ERROR3 {
             get {
@@ -223,7 +214,7 @@ namespace poic_2408.Properties {
         }
         
         /// <summary>
-        ///   画像のキャプチャに失敗しました に類似しているローカライズされた文字列を検索します。
+        ///   {0}を取得できませんでした に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string MESS_ERROR4 {
             get {
@@ -232,7 +223,7 @@ namespace poic_2408.Properties {
         }
         
         /// <summary>
-        ///   画像認識後の処理が正常に実装されていません に類似しているローカライズされた文字列を検索します。
+        ///   画像がセットされていません に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string MESS_ERROR5 {
             get {
@@ -241,7 +232,7 @@ namespace poic_2408.Properties {
         }
         
         /// <summary>
-        ///   画像処理に失敗しました に類似しているローカライズされた文字列を検索します。
+        ///   プラグインの設定を読み込めませんでした に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string MESS_ERROR6 {
             get {
@@ -250,7 +241,7 @@ namespace poic_2408.Properties {
         }
         
         /// <summary>
-        ///   {0}を取得できませんでした に類似しているローカライズされた文字列を検索します。
+        ///   ビューアの表示か後処理 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string MESS_ERROR7 {
             get {
@@ -259,7 +250,7 @@ namespace poic_2408.Properties {
         }
         
         /// <summary>
-        ///   画像がセットされていません に類似しているローカライズされた文字列を検索します。
+        ///   一部画像の読み込みに失敗しました に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string MESS_ERROR8 {
             get {
@@ -268,7 +259,7 @@ namespace poic_2408.Properties {
         }
         
         /// <summary>
-        ///   プラグインの設定を読み込めませんでした に類似しているローカライズされた文字列を検索します。
+        ///   設定の保存 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string MESS_ERROR9 {
             get {
@@ -277,7 +268,8 @@ namespace poic_2408.Properties {
         }
         
         /// <summary>
-        ///   同じ名前のファイルが存在しています\n上書きしてもよろしいですか に類似しているローカライズされた文字列を検索します。
+        ///   同じ名前のファイルが存在しています
+        ///上書きしてもよろしいですか に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string MESS_FILESAVE {
             get {
@@ -318,6 +310,15 @@ namespace poic_2408.Properties {
         internal static string STRING_DEFAULT {
             get {
                 return ResourceManager.GetString("STRING_DEFAULT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   DLID に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string STRING_DLID {
+            get {
+                return ResourceManager.GetString("STRING_DLID", resourceCulture);
             }
         }
         
@@ -403,6 +404,15 @@ namespace poic_2408.Properties {
         }
         
         /// <summary>
+        ///   プラグイン に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string STRING_PLUGIN {
+            get {
+                return ResourceManager.GetString("STRING_PLUGIN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   実FPS に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string STRING_REFPS {
@@ -426,6 +436,33 @@ namespace poic_2408.Properties {
         internal static string STRING_SETTINGS {
             get {
                 return ResourceManager.GetString("STRING_SETTINGS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   設定一覧 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string STRING_SETTINGSLIST {
+            get {
+                return ResourceManager.GetString("STRING_SETTINGSLIST", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   設定名 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string STRING_SETTINGSNAME {
+            get {
+                return ResourceManager.GetString("STRING_SETTINGSNAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   システム設定 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string STRING_SYSTEMSETTINGS {
+            get {
+                return ResourceManager.GetString("STRING_SYSTEMSETTINGS", resourceCulture);
             }
         }
         
