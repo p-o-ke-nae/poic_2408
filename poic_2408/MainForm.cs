@@ -15,17 +15,12 @@ using System.Text.RegularExpressions;
 using System.Data;
 using pokenaeLibrary;
 using System.Net;
+using PluginBase_ScreenShot;
 
 namespace poic_2408
 {
     public partial class MainForm : Form, IInput
     {
-        #region privateなフィールドなど
-        /// <summary>
-        /// メッセージボックス
-        /// </summary>
-        Form _messForm = new Form();
-
         #region ロードしたプラグイン
         /// <summary>
         /// 映像源のプラグイン一覧
@@ -47,7 +42,27 @@ namespace poic_2408
         /// シナリオのプラグイン
         /// </summary>
         IScenario _plugin_Scenario;
+        /// <summary>
+        /// スクリーンショットのプラグイン
+        /// </summary>
+        IScreenShot _plugin_ScreenShot;
+
         #endregion
+
+        #region 使用するインターフェース
+        IPNWebRequest _pNWebRequest;
+        IPNJsonExtensions _pNJsonExtensions;
+        IList<IPNImageExtensions> _pNImageExtensionses;
+        IPNPluginExtensions _pNPluginExtensions;
+        IPNAPIRequest _pNAPIRequest;
+
+        #endregion
+
+        #region privateなフィールドなど
+        /// <summary>
+        /// メッセージボックス
+        /// </summary>
+        Form _messForm = new Form();
 
         /// <summary>
         /// 入力先
@@ -124,15 +139,6 @@ namespace poic_2408
         /// 実FPSの平均値を格納
         /// </summary>
         int _reFPS = 0;
-
-        #region 使用するインターフェース
-        IPNWebRequest _pNWebRequest;
-        IPNJsonExtensions _pNJsonExtensions;
-        IList<IPNImageExtensions> _pNImageExtensionses;
-        IPNPluginExtensions _pNPluginExtensions;
-        IPNAPIRequest _pNAPIRequest;
-
-        #endregion
 
         #endregion
 
@@ -243,18 +249,26 @@ namespace poic_2408
         {
             InitializeComponent();
 
-            //try
-            //{
+            // ウィンドウのサイズを固定する設定
+            // 枠を固定
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            // 最大化ボタンを無効化
+            this.MaximizeBox = false;
+            // 最小化ボタンは有効のまま
+            this.MinimizeBox = true;
+
+            try
+            {
                 _pNWebRequest = new PNHttpRequest();
                 _pNJsonExtensions = new PNJsonExtensions();
                 _pNImageExtensionses = new List<IPNImageExtensions>() { new PNImageGoogleDrive() };
                 _pNPluginExtensions = new PNPluginExtensions();
                 _pNAPIRequest = new PNAPIRequest();
-            //}
-            //catch
-            //{
+            }
+            catch
+            {
 
-            //}
+            }
         }
 
         #region 入力インターフェースの実装
@@ -278,6 +292,9 @@ namespace poic_2408
                             result += "\"" + item.Name + "\": " + "\"" + CharacterRecognition_Single(item.PluginID, item.PluginSettingsJson, trimImg) + "\",";
                         }
                     }
+
+                    //UIが最後に読み込まれたものを表示しているのでリセットする
+                    ClearCharacterPluginUI();
                 }
                 catch
                 {
@@ -294,6 +311,7 @@ namespace poic_2408
                 else
                 {
                     MessageBox.Show(_messForm, _timerErrorMessage);
+                    ControlLoad();
                 }
 
                 throw;
@@ -317,9 +335,8 @@ namespace poic_2408
             }
             catch
             {
-                //_timerErrorMessage = string.Format(Properties.Resources.MESS_ERROR4, "メインツール");
-                //throw;
-                //TODO: メインツールが無い場合，単体で意味なく動かせるのかエラーで止めるのか検討する
+                _timerErrorMessage = string.Format(Properties.Resources.MESS_ERROR4, "メインツール");
+                throw;
             }
         }
 
@@ -366,6 +383,30 @@ namespace poic_2408
                 foreach (var item in _plugins_CharacterRecognition)
                 {
                     comboBoxPluginCharacterRecognition.Items.Add(new ComboItemPlugin() { Name = item.Name, ID = item.ID });
+                    item.SetUp(this.tabControlPluginCharacterRecognition);
+                }
+                //文字認識のタブが持つすべてのコントロールにチェンジイベントを追加
+                foreach (TabPage page in tabControlPluginCharacterRecognition.TabPages)
+                {
+                    foreach (Control item in page.Controls)
+                    {
+                        if (item is TextBox txb)
+                        {
+                            txb.TextChanged += TabPageControlChanged;
+                        }
+                        else if(item is CheckBox chb)
+                        {
+                            chb.CheckedChanged += TabPageControlChanged;
+                        }
+                        else if(item is NumericUpDown nud)
+                        {
+                            nud.ValueChanged += TabPageControlChanged;
+                        }
+                        else if (item is ComboBox cmb)
+                        {
+                            cmb.SelectedIndexChanged += TabPageControlChanged;
+                        }
+                    }
                 }
 
                 //画像処理のプラグインの読込
@@ -386,6 +427,17 @@ namespace poic_2408
                         break;
                     }
                 }
+
+                //スクリーンショットプラグインの読込
+                var _plugins_ScreenShot = _pNPluginExtensions.LoadPlugins<IScreenShot>(CharConstants.sPLUGIN_SCREENSHOT_PATH);
+                if (_plugins_ScreenShot != null)
+                {
+                    foreach (var item in _plugins_ScreenShot)
+                    {
+                        _plugin_ScreenShot = item;
+                        break;
+                    }
+                }
             }
             catch
             {
@@ -396,20 +448,53 @@ namespace poic_2408
 
         }
 
-        private void ImageSave(Bitmap bitmap, string dirpath)
+        private void TabPageTextBoxChanged(object sender, EventArgs e)
         {
-            DateTime now = DateTime.Now;
-            string datestr = now.ToString("yyyyMMdd");
-            string filedirpath = dirpath + datestr + "\\";
-            if (!Directory.Exists(filedirpath))
+
+        }
+        private void TabPageCheckBoxChanged(object sender, EventArgs e)
+        {
+
+        }
+        /// <summary>
+        /// タブページ内の全てのコントローラの各チェンジイベントにJson設定反映を加える
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TabPageControlChanged(object sender, EventArgs e)
+        {
+            if (sender is Control control)
             {
-                Directory.CreateDirectory(filedirpath);
+                TabPage parentTabPage = GetParentTabPage(control);
+                if (parentTabPage is ICharacterRecognition icr)
+                {
+                    for (int i = 0; i < listBoxCharacterRecognitionSettings.Items.Count; i++)
+                    {
+                        foreach (var item in listBoxCharacterRecognitionSettings.SelectedItems)
+                        {
+                            if (listBoxCharacterRecognitionSettings.Items[i] == item && CRSList[i].PluginID == icr.ID)
+                            {
+                                CRSList[i].PluginSettingsJson = icr.GetSettingsJson();
+                            }
+                        }
+                    }
+                }
             }
-            string fullpath = filedirpath + "ScreenShot_" + now.ToString("yyyyMMdd_hhmmssfff") + ".png";
-            bitmap.Save(fullpath);
         }
 
-        #endregion
+        private TabPage GetParentTabPage(Control control)
+        { 
+            // コントロールの親階層を辿ってTabPageを探す
+            Control parent = control.Parent; 
+            while (parent != null && !(parent is TabPage)) 
+            { 
+                parent = parent.Parent; 
+            } 
+            return parent as TabPage; 
+        }
+
+
+            #endregion
 
         #region 映像源
         /// <summary>
@@ -531,6 +616,9 @@ namespace poic_2408
 
             try
             {
+                //UI反映防止のため，文字認識リストのセレクトを解除する
+                listBoxCharacterRecognitionSettings.ClearSelected();
+                
                 ICharacterRecognition usePlugIn = null;
                 foreach (var item in _plugins_CharacterRecognition)
                 {
@@ -558,6 +646,34 @@ namespace poic_2408
 
             return result;
         }
+
+        private void ClearCharacterPluginUI()
+        {
+            //文字認識のタブが持つすべてのコントロールにチェンジイベントを追加
+            foreach (TabPage page in tabControlPluginCharacterRecognition.TabPages)
+            {
+                foreach (Control item in page.Controls)
+                {
+                    if (item is TextBox txb)
+                    {
+                        txb.Text = "";
+                    }
+                    else if (item is CheckBox chb)
+                    {
+                        chb.Checked = false;
+                    }
+                    else if (item is NumericUpDown nud)
+                    {
+                        nud.Value = nud.Minimum;
+                    }
+                    else if (item is ComboBox cmb)
+                    {
+                        cmb.SelectedIndex = -1;
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region 画像処理
@@ -700,7 +816,7 @@ namespace poic_2408
 
                     //画像認識の結果
                     labelMatchRateImageRecognition.Text = string.Format(Properties.Resources.FORMAT_KEYVALUE, Properties.Resources.STRING_MATCHRATE,
-                    string.Format(Properties.Resources.FORMAT_RATE, _matchRateImageRecognition));
+                    string.Format(Properties.Resources.FORMAT_RATE, _matchRateImageRecognition.ToString("F3")));
                     labelRectangleImageRecognition_X.Text = string.Format(Properties.Resources.FORMAT_KEYVALUE, Properties.Resources.STRING_X, _rectAngleImageRecognition.X);
                     labelRectangleImageRecognition_Y.Text = string.Format(Properties.Resources.FORMAT_KEYVALUE, Properties.Resources.STRING_Y, _rectAngleImageRecognition.Y);
                     labelRectangleImageRecognition_Width.Text = string.Format(Properties.Resources.FORMAT_KEYVALUE, Properties.Resources.STRING_WIDTH, _rectAngleImageRecognition.Width);
@@ -808,6 +924,8 @@ namespace poic_2408
             //認識前後の状況をリセット
             _beforeFlg = false;
             _afterFlg = false;
+
+            ControlLoad();
         }
 
         /// <summary>
@@ -877,16 +995,8 @@ namespace poic_2408
                 }
 
                 //文字認識プラグインの設定の保存
-                foreach (var crs in CRSList)
-                {
-                    foreach (var item in _plugins_CharacterRecognition)
-                    {
-                        if (crs.PluginID == item.ID)
-                        {
-                            crs.PluginSettingsJson = item.GetSettingsJson();
-                        }
-                    }
-                }
+                //GUIのチェンジイベントで行うのでここではしない
+                
                 //文字認識リストの設定の保存
                 result.CRSListJson = JsonConvert.SerializeObject(CRSList);
 
@@ -1171,37 +1281,6 @@ namespace poic_2408
             this.Text = Properties.Resources.TOOL_NAME + " ver" + CharConstants.VERSION;
         }
 
-        #region スクリーンショット
-        private void buttonScreenShot_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                ImageSave(CaptureImage, CharConstants.sIMAGE_PATH);
-            }
-            catch
-            {
-                MessageBox.Show(_messForm, Properties.Resources.MESS_ERROR5);
-            }
-        }
-
-        private void buttonScreenShotMatch_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                IImageProcessing trim = new PresetImageProcessing_Trimming();
-                using (Bitmap bitmap = trim.ProcessingResult(CaptureImage, _rectAngleImageRecognition))
-                {
-                    ImageSave(bitmap, CharConstants.sIMAGE_PATH);
-                }
-            }
-            catch
-            {
-                MessageBox.Show(_messForm, Properties.Resources.MESS_ERROR5);
-            }
-        }
-
-        #endregion
-
         #region 個人の設定ファイルの取得
         /// <summary>
         /// WebAPIから指定のリンク先から設定ファイルと画像をダウンロードする
@@ -1295,6 +1374,37 @@ namespace poic_2408
 
         #endregion
 
+        #region スクリーンショット
+        private void buttonScreenShot_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _plugin_ScreenShot.ScreenShot(CaptureImage, CharConstants.sIMAGE_PATH, this);
+            }
+            catch
+            {
+                MessageBox.Show(_messForm, Properties.Resources.MESS_ERROR5);
+            }
+        }
+
+        private void buttonScreenShotMatch_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                IImageProcessing trim = new PresetImageProcessing_Trimming();
+                using (Bitmap bitmap = trim.ProcessingResult(CaptureImage, _rectAngleImageRecognition))
+                {
+                    _plugin_ScreenShot.ScreenShot(bitmap, CharConstants.sIMAGE_PATH, this);
+                }
+            }
+            catch
+            {
+                MessageBox.Show(_messForm, Properties.Resources.MESS_ERROR5);
+            }
+        }
+
+        #endregion
+
         #region ファイルの保存やダウンロード
         /// <summary>
         /// 指定されたパスにファイルを保存するかメッセージボックスで確認
@@ -1378,11 +1488,22 @@ namespace poic_2408
             }
 
             //設定の読込
-            var settings = _pNJsonExtensions.DeserializeFromFile<SystemSettings>(CharConstants.sCONFIG_PATH);
-            if (settings != null)
+            try
             {
-                LoadSystemSettings(settings);
-                LoadSettings(settings.Settings);
+                var settings = _pNJsonExtensions.DeserializeFromFile<SystemSettings>(CharConstants.sCONFIG_PATH);
+                if (settings != null)
+                {
+                    LoadSystemSettings(settings);
+                    LoadSettings(settings.Settings);
+                }
+            }
+            catch
+            {
+                MessageBox.Show(_messForm, string.Format(Properties.Resources.FORMAT_ERROR,
+                    string.Format(Properties.Resources.FORMAT_READERROR, Properties.Resources.STRING_SETTINGS)
+                    ));
+
+                ControlLoad();
             }
 
         }
@@ -1588,6 +1709,23 @@ namespace poic_2408
                             labelSelectPluginCharacterRecognition.Text = Properties.Resources.MESS_ERROR6;
                         }
 
+                        //該当するプラグインのタブページがあれば表示する
+                        foreach(TabPage tabpage in tabControlPluginCharacterRecognition.TabPages)
+                        {
+                            try
+                            {
+                                if (tabpage is ICharacterRecognition icr && icr.ID == CRS.PluginID)
+                                {
+                                    icr.LoadSettingsJson(CRS.PluginSettingsJson);
+                                    tabControlPluginCharacterRecognition.SelectedTab = tabpage;
+                                }
+                            }
+                            catch
+                            {
+                                MessageBox.Show(_messForm, Properties.Resources.MESS_ERROR6);
+                            }
+                        }
+
                         break;
                     }
                 }
@@ -1686,6 +1824,7 @@ namespace poic_2408
                     if (settings != null)
                     {
                         LoadSettings(settings);
+                        textBoxSettingsName.Text = cmb.Text;
                     }
                     else
                     {

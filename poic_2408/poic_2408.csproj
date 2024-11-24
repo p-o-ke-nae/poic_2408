@@ -26,6 +26,7 @@
 	  <ProjectReference Include="..\..\PluginBase_ImageRecognition\PluginBase_ImageRecognition\PluginBase_ImageRecognition.csproj" />
         <ProjectReference Include="..\..\PluginBase_Input\PluginBase_Input\PluginBase_Input.csproj" />
         <ProjectReference Include="..\..\PluginBase_Scenario\PluginBase_Scenario\PluginBase_Scenario.csproj" />
+        <ProjectReference Include="..\..\PluginBase_ScreenShot\PluginBase_ScreenShot\PluginBase_ScreenShot.csproj" />
 		<ProjectReference Include="..\..\PluginBase_VideoCapture\PluginBase_VideoCapture\PluginBase_VideoCapture.csproj" />
 		<ProjectReference Include="..\..\pokenaeLibrary\pokenaeLibrary\pokenaeLibrary.csproj" />
   </ItemGroup>

@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InputDestination", "..\Inpu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pokenaeLibrary", "..\pokenaeLibrary\pokenaeLibrary\pokenaeLibrary.csproj", "{B016B11E-5E61-4866-AC9B-751CBD7FA2A9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginBase_ScreenShot", "..\PluginBase_ScreenShot\PluginBase_ScreenShot\PluginBase_ScreenShot.csproj", "{C7061653-A73C-4403-928D-F571C51B3125}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{B016B11E-5E61-4866-AC9B-751CBD7FA2A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B016B11E-5E61-4866-AC9B-751CBD7FA2A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B016B11E-5E61-4866-AC9B-751CBD7FA2A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7061653-A73C-4403-928D-F571C51B3125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7061653-A73C-4403-928D-F571C51B3125}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7061653-A73C-4403-928D-F571C51B3125}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7061653-A73C-4403-928D-F571C51B3125}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

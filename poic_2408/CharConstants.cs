@@ -53,6 +53,10 @@ namespace poic_2408
         /// シナリオプラグインの格納パス
         /// </summary>
         public static string sPLUGIN_SCENARIO_PATH = sINPUTDIRPATH + "Plugin_Scenario\\";
+        /// <summary>
+        /// シナリオプラグインの格納パス
+        /// </summary>
+        public static string sPLUGIN_SCREENSHOT_PATH = sINPUTDIRPATH + "Plugin_ScreenShot\\";
 
         /// <summary>
         /// 画像フォルダのパス
