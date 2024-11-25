@@ -10,7 +10,7 @@ namespace poic_2408
 {
     internal class PresetImageProcessing_Trimming : IImageProcessing
     {
-        public string ID { get => "IP0001"; }
+        public string ID { get => "PSIP0001"; }
         public string Name { get => "画像トリミングプラグイン"; }
         public string Description { get => "画像のトリミングを行うプラグインです．"; }
 

@@ -12,7 +12,7 @@ namespace poic_2408
     {
         public Color Color { get; set; } = Color.Red;
 
-        public string ID { get => "IP0002"; }
+        public string ID { get => "PSIP0002"; }
         public string Name { get => "四角形描画プラグイン"; }
         public string Description { get => "四角形の描画を行うプラグインです．"; }
         public void SetUp(TabControl tabs)
