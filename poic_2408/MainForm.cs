@@ -1,21 +1,12 @@
-using System.Reflection;
-using PluginBase_VideoCapture;
-using PluginBase_Input;
-using System.Security.Policy;
-using InputDestination;
-using PluginBase_ImageRecognition;
+using Newtonsoft.Json;
 using PluginBase_CharacterRecognition;
 using PluginBase_ImageProcessing;
-using System.Drawing.Text;
+using PluginBase_ImageRecognition;
+using PluginBase_Input;
 using PluginBase_Scenario;
-using Newtonsoft.Json;
-using System.Collections.Specialized;
-using System.Resources;
-using System.Text.RegularExpressions;
-using System.Data;
-using pokenaeLibrary;
-using System.Net;
 using PluginBase_ScreenShot;
+using PluginBase_VideoCapture;
+using pokenaeLibrary;
 
 namespace poic_2408
 {
@@ -821,7 +812,7 @@ namespace poic_2408
                     labelRectangleImageRecognition_Y.Text = string.Format(Properties.Resources.FORMAT_KEYVALUE, Properties.Resources.STRING_Y, _rectAngleImageRecognition.Y);
                     labelRectangleImageRecognition_Width.Text = string.Format(Properties.Resources.FORMAT_KEYVALUE, Properties.Resources.STRING_WIDTH, _rectAngleImageRecognition.Width);
                     labelRectangleImageRecognition_Height.Text = string.Format(Properties.Resources.FORMAT_KEYVALUE, Properties.Resources.STRING_HEIGHT, _rectAngleImageRecognition.Height);
-
+                    
                     //ビューアへの反映
                     if (pictureBoxViewer.Image != null)
                     {
@@ -830,27 +821,24 @@ namespace poic_2408
 
                     if (radioButtonDefault.Checked == true)
                     {
-                        pictureBoxViewer.Image = (Bitmap)CaptureImage.Clone();
+                        if (_afterFlg == true)
+                        {
+                            pictureBoxViewer.Image = (Bitmap)CaptureImage.Clone();
+                        }
                     }
                     else if (radioButtonImageRecognition.Checked == true)
                     {
-                        SetProcessingImageFromPlugins();
-                        pictureBoxViewer.Image = (Bitmap)_processingImage.Clone();
-                    }
-                    else if (radioButtonImageProcessing.Checked == true)
-                    {
-                        SetProcessingImageFromPlugins();
-                        //画像認識範囲を表示する
+                        //画像認識結果
                         var rectangler = new PresetImageProcessing_DrawRectangle();
                         using (var image = (Bitmap)CaptureImage.Clone())
                         {
-                            if (_viewImage != null)
-                            {
-                                _viewImage.Dispose();
-                            }
-                            _viewImage = rectangler.ProcessingResult(image, _rectAngleImageRecognition);
+                            pictureBoxViewer.Image = rectangler.ProcessingResult(image, _rectAngleImageRecognition);
                         }
-
+                    }
+                    else if (radioButtonImageProcessing.Checked == true)
+                    {
+                        //画像処理結果
+                        SetProcessingImageFromPlugins();
                         //ビューアに文字認識を行う領域を表示する
                         if (_viewImage != null)
                         {
@@ -860,6 +848,23 @@ namespace poic_2408
                         foreach (var item in CRSList)
                         {
                             var rectanglerCRS = new PresetImageProcessing_DrawRectangle();
+
+                            var rectanglerSettings = JsonConvert.DeserializeObject<PresetImageProcessing_DrawRectangle.Settings>(rectanglerCRS.GetSettingsJson());
+                            rectanglerSettings.Color = Color.Green;
+
+                            //リストで選択されているものだけ色を変える
+                            foreach (var select in listBoxCharacterRecognitionSettings.SelectedItems)
+                            {
+                                if(item == select)
+                                {
+                                    rectanglerSettings.Color = Color.PaleVioletRed;
+                                    break;
+                                }
+                            }
+
+                            //色の設定を読み込む
+                            rectanglerCRS.LoadSettingsJson(JsonConvert.SerializeObject(rectanglerSettings));
+
                             using (var image = (Bitmap)_viewImage.Clone())
                             {
                                 if (_viewImage != null)
@@ -1541,12 +1546,25 @@ namespace poic_2408
             var cmb = (ComboBox)sender;
             foreach (var item in listBoxCharacterRecognitionSettings.SelectedItems)
             {
-                if (item != null && item is CharacterRecgnitionSettings && cmb.SelectedItem is ComboItemPlugin)
+                if (item != null && item is CharacterRecgnitionSettings CRS && cmb.SelectedItem is ComboItemPlugin)
                 {
-                    var CRS = (CharacterRecgnitionSettings)item;
                     var plugin = (ComboItemPlugin)cmb.SelectedItem;
                     CRS.PluginID = plugin.ID;
                     CRS.PluginName = plugin.Name;
+                    //プラグインの初期設定
+                    foreach (var pluginitem in _plugins_CharacterRecognition)
+                    {
+                        if (CRS.PluginID == pluginitem.ID)
+                        {
+                            Type variableType = pluginitem.GetType();
+                            object newInstance = Activator.CreateInstance(variableType);
+                            if (newInstance is ICharacterRecognition crplugin)
+                            {
+                                CRS.PluginSettingsJson = crplugin.GetSettingsJson();
+                            }
+                            break;
+                        }
+                    }
                     labelSelectPluginCharacterRecognition.Text = plugin.Name;
                 }
             }
