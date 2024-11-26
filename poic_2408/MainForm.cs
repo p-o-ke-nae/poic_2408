@@ -7,6 +7,8 @@ using PluginBase_Scenario;
 using PluginBase_ScreenShot;
 using PluginBase_VideoCapture;
 using pokenaeLibrary;
+using System.Security.Cryptography.Xml;
+using static poic_2408.PresetImageProcessing_DrawRectangle;
 
 namespace poic_2408
 {
@@ -146,7 +148,7 @@ namespace poic_2408
 
         #endregion
 
-        #region 使用するプラグインのID
+        #region 使用するプラグインのID・Index
         /// <summary>
         /// 使用する映像源プラグインID
         /// </summary>
@@ -155,6 +157,11 @@ namespace poic_2408
         /// 使用する画像認識プラグインID
         /// </summary>
         string UsepluginID_ImageRecognition { get; set; }
+
+        /// <summary>
+        /// 画像処理プラグインの実行順番
+        /// </summary>
+        IList<string> PluginIndex_ImageProcessing { get; set; }
 
         #endregion
 
@@ -385,11 +392,11 @@ namespace poic_2408
                         {
                             txb.TextChanged += TabPageControlChanged;
                         }
-                        else if(item is CheckBox chb)
+                        else if (item is CheckBox chb)
                         {
                             chb.CheckedChanged += TabPageControlChanged;
                         }
-                        else if(item is NumericUpDown nud)
+                        else if (item is NumericUpDown nud)
                         {
                             nud.ValueChanged += TabPageControlChanged;
                         }
@@ -474,18 +481,34 @@ namespace poic_2408
         }
 
         private TabPage GetParentTabPage(Control control)
-        { 
+        {
             // コントロールの親階層を辿ってTabPageを探す
-            Control parent = control.Parent; 
-            while (parent != null && !(parent is TabPage)) 
-            { 
-                parent = parent.Parent; 
-            } 
-            return parent as TabPage; 
+            Control parent = control.Parent;
+            while (parent != null && !(parent is TabPage))
+            {
+                parent = parent.Parent;
+            }
+            return parent as TabPage;
         }
 
+        private void PluginImageProcessingSort()
+        {
+            Dictionary<string, int> referenceDict = PluginIndex_ImageProcessing.Select((item, index) => new { item, index }).ToDictionary(x => x.item, x => x.index);
+            _plugins_ImageProcessing = _plugins_ImageProcessing.OrderBy(item => referenceDict.ContainsKey(item.ID) ? referenceDict[item.ID] : int.MaxValue).ToList();
 
-            #endregion
+            var oldtabs = tabControlPluginImageProcessing.TabPages;
+            tabControlPluginImageProcessing.TabPages.Clear();
+            foreach (var item in _plugins_ImageProcessing)
+            {
+                item.SetUp(tabControlPluginImageProcessing);
+                //foreach (var tab in oldtabs)
+                //{
+                //    tabControlPluginImageProcessing.TabPages.Add();
+                //}
+            }
+        }
+
+        #endregion
 
         #region 映像源
         /// <summary>
@@ -609,7 +632,7 @@ namespace poic_2408
             {
                 //UI反映防止のため，文字認識リストのセレクトを解除する
                 listBoxCharacterRecognitionSettings.ClearSelected();
-                
+
                 ICharacterRecognition usePlugIn = null;
                 foreach (var item in _plugins_CharacterRecognition)
                 {
@@ -812,7 +835,7 @@ namespace poic_2408
                     labelRectangleImageRecognition_Y.Text = string.Format(Properties.Resources.FORMAT_KEYVALUE, Properties.Resources.STRING_Y, _rectAngleImageRecognition.Y);
                     labelRectangleImageRecognition_Width.Text = string.Format(Properties.Resources.FORMAT_KEYVALUE, Properties.Resources.STRING_WIDTH, _rectAngleImageRecognition.Width);
                     labelRectangleImageRecognition_Height.Text = string.Format(Properties.Resources.FORMAT_KEYVALUE, Properties.Resources.STRING_HEIGHT, _rectAngleImageRecognition.Height);
-                    
+
                     //ビューアへの反映
                     if (pictureBoxViewer.Image != null)
                     {
@@ -855,7 +878,7 @@ namespace poic_2408
                             //リストで選択されているものだけ色を変える
                             foreach (var select in listBoxCharacterRecognitionSettings.SelectedItems)
                             {
-                                if(item == select)
+                                if (item == select)
                                 {
                                     rectanglerSettings.Color = Color.PaleVioletRed;
                                     break;
@@ -997,11 +1020,12 @@ namespace poic_2408
                 foreach (var item in _plugins_ImageProcessing)
                 {
                     result.SettingsJson_ImageProcessing.Add(item.GetSettingsJson());
+                    result.PluginIndex_ImageProcessing.Add(item.ID);
                 }
 
                 //文字認識プラグインの設定の保存
                 //GUIのチェンジイベントで行うのでここではしない
-                
+
                 //文字認識リストの設定の保存
                 result.CRSListJson = JsonConvert.SerializeObject(CRSList);
 
@@ -1063,6 +1087,12 @@ namespace poic_2408
                     }
 
                     //画像処理プラグイン
+                    //実行順序で並び替え
+                    PluginIndex_ImageProcessing = settings.PluginIndex_ImageProcessing;
+                    Dictionary<string, int> referenceDict = PluginIndex_ImageProcessing.Select((item, index) => new { item, index }).ToDictionary(x => x.item, x => x.index);
+                    _plugins_ImageProcessing = _plugins_ImageProcessing.OrderBy(item => referenceDict.ContainsKey(item.ID) ? referenceDict[item.ID] : int.MaxValue).ToList();
+                    tabControlPluginImageProcessing.TabPages.Clear();
+
                     foreach (var item in _plugins_ImageProcessing)
                     {
                         foreach (var setting in settings.SettingsJson_ImageProcessing)
@@ -1073,6 +1103,7 @@ namespace poic_2408
                                 break;
                             }
                         }
+                        item.SetUp(tabControlPluginImageProcessing);
                     }
 
                     //文字認識リスト
@@ -1284,6 +1315,37 @@ namespace poic_2408
             labelSettingsSave.Text = Properties.Resources.STRING_SETTINGSNAME;
             buttonSettingsSave.Text = Properties.Resources.BUTTON_SAVE;
             this.Text = Properties.Resources.TOOL_NAME + " ver" + CharConstants.VERSION;
+        }
+
+        private void ImageProcessingTabSort(int increment)
+        {
+            if (tabControlPluginImageProcessing.SelectedTab is IImageProcessing plugin)
+            {
+                var currenttab = tabControlPluginImageProcessing.SelectedTab;
+
+                List<IImageProcessing> pluginList = new List<IImageProcessing>();
+                foreach (var item in _plugins_ImageProcessing)
+                {
+                    pluginList.Add(item);
+                }
+
+                int oldindex = pluginList.IndexOf(plugin);
+                int newindex = pluginList.IndexOf(plugin) + increment;
+
+                if (newindex < 0 || newindex >= pluginList.Count)
+                {
+                    return;
+                }
+                pluginList.RemoveAt(oldindex);
+                pluginList.Insert(newindex, plugin);
+
+                Dictionary<string, int> referenceDict = pluginList.Select((item, index) => new { item, index }).ToDictionary(x => x.item.ID, x => x.index);
+                PluginIndex_ImageProcessing = PluginIndex_ImageProcessing.OrderBy(item => referenceDict.ContainsKey(item) ? referenceDict[item] : int.MaxValue).ToList();
+
+                PluginImageProcessingSort();
+
+                tabControlPluginImageProcessing.SelectedTab = currenttab;
+            }
         }
 
         #region 個人の設定ファイルの取得
@@ -1728,7 +1790,7 @@ namespace poic_2408
                         }
 
                         //該当するプラグインのタブページがあれば表示する
-                        foreach(TabPage tabpage in tabControlPluginCharacterRecognition.TabPages)
+                        foreach (TabPage tabpage in tabControlPluginCharacterRecognition.TabPages)
                         {
                             try
                             {
@@ -1885,6 +1947,16 @@ namespace poic_2408
             SettingsIntoCombo();
         }
 
+        private void buttonIPPluginIncrement_Click(object sender, EventArgs e)
+        {
+            ImageProcessingTabSort(1);
+        }
+
+        private void buttonIPPluginDecrement_Click(object sender, EventArgs e)
+        {
+            ImageProcessingTabSort(-1);
+        }
+
         #endregion
 
         #region MainFormの設定クラス
@@ -1917,6 +1989,12 @@ namespace poic_2408
             /// </summary>
             [JsonProperty("settingsjson_imageprocessing")]
             public IList<string> SettingsJson_ImageProcessing { get; set; } = new List<string>();
+
+            /// <summary>
+            /// 画像処理プラグインの実行順番
+            /// </summary>
+            [JsonProperty("pluginindex_imageprocessing")]
+            public IList<string> PluginIndex_ImageProcessing { get; set; } = new List<string>();
 
             /// <summary>
             /// 文字認識のリスト
@@ -2097,7 +2175,5 @@ namespace poic_2408
         #endregion
 
 
-
-        
     }
 }

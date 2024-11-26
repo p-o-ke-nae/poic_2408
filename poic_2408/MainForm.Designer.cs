@@ -32,6 +32,7 @@
             comboBoxPluginVideoCapture = new ComboBox();
             tabControlOption = new TabControl();
             tabPageSettings = new TabPage();
+            buttonReload = new Button();
             labelSettingsSave = new Label();
             textBoxSettingsName = new TextBox();
             buttonSettingsSave = new Button();
@@ -77,6 +78,7 @@
             buttonDeleteCharacterRecognition = new Button();
             buttonAddCharacterRecognition = new Button();
             tabPageImageProcessing = new TabPage();
+            buttonIPPluginIncrement = new Button();
             tabControlPluginImageProcessing = new TabControl();
             panelViewer = new Panel();
             labelViewer = new Label();
@@ -92,7 +94,7 @@
             numericUpDownFPS = new NumericUpDown();
             labelFPS = new Label();
             checkBoxTopMost = new CheckBox();
-            buttonReload = new Button();
+            buttonIPPluginDecrement = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBoxViewer).BeginInit();
             tabControlOption.SuspendLayout();
             tabPageSettings.SuspendLayout();
@@ -158,6 +160,16 @@
             tabPageSettings.TabIndex = 1;
             tabPageSettings.Text = "設定";
             tabPageSettings.UseVisualStyleBackColor = true;
+            // 
+            // buttonReload
+            // 
+            buttonReload.Location = new Point(65, 79);
+            buttonReload.Name = "buttonReload";
+            buttonReload.Size = new Size(75, 23);
+            buttonReload.TabIndex = 8;
+            buttonReload.Text = "再読込";
+            buttonReload.UseVisualStyleBackColor = true;
+            buttonReload.Click += buttonReload_Click;
             // 
             // labelSettingsSave
             // 
@@ -618,6 +630,8 @@
             // 
             // tabPageImageProcessing
             // 
+            tabPageImageProcessing.Controls.Add(buttonIPPluginDecrement);
+            tabPageImageProcessing.Controls.Add(buttonIPPluginIncrement);
             tabPageImageProcessing.Controls.Add(tabControlPluginImageProcessing);
             tabPageImageProcessing.Location = new Point(4, 24);
             tabPageImageProcessing.Name = "tabPageImageProcessing";
@@ -627,12 +641,22 @@
             tabPageImageProcessing.Text = Properties.Resources.STRING_IMAGEPROCESSING;
             tabPageImageProcessing.UseVisualStyleBackColor = true;
             // 
+            // buttonIPPluginIncrement
+            // 
+            buttonIPPluginIncrement.Location = new Point(87, 6);
+            buttonIPPluginIncrement.Name = "buttonIPPluginIncrement";
+            buttonIPPluginIncrement.Size = new Size(75, 23);
+            buttonIPPluginIncrement.TabIndex = 1;
+            buttonIPPluginIncrement.Text = ">>";
+            buttonIPPluginIncrement.UseVisualStyleBackColor = true;
+            buttonIPPluginIncrement.Click += buttonIPPluginIncrement_Click;
+            // 
             // tabControlPluginImageProcessing
             // 
-            tabControlPluginImageProcessing.Location = new Point(6, 6);
+            tabControlPluginImageProcessing.Location = new Point(6, 35);
             tabControlPluginImageProcessing.Name = "tabControlPluginImageProcessing";
             tabControlPluginImageProcessing.SelectedIndex = 0;
-            tabControlPluginImageProcessing.Size = new Size(274, 354);
+            tabControlPluginImageProcessing.Size = new Size(274, 325);
             tabControlPluginImageProcessing.TabIndex = 0;
             // 
             // panelViewer
@@ -772,15 +796,15 @@
             checkBoxTopMost.UseVisualStyleBackColor = true;
             checkBoxTopMost.CheckedChanged += checkBoxTopMost_CheckedChanged;
             // 
-            // buttonReload
+            // buttonIPPluginDecrement
             // 
-            buttonReload.Location = new Point(65, 79);
-            buttonReload.Name = "buttonReload";
-            buttonReload.Size = new Size(75, 23);
-            buttonReload.TabIndex = 8;
-            buttonReload.Text = "再読込";
-            buttonReload.UseVisualStyleBackColor = true;
-            buttonReload.Click += buttonReload_Click;
+            buttonIPPluginDecrement.Location = new Point(6, 6);
+            buttonIPPluginDecrement.Name = "buttonIPPluginDecrement";
+            buttonIPPluginDecrement.Size = new Size(75, 23);
+            buttonIPPluginDecrement.TabIndex = 2;
+            buttonIPPluginDecrement.Text = "<<";
+            buttonIPPluginDecrement.UseVisualStyleBackColor = true;
+            buttonIPPluginDecrement.Click += buttonIPPluginDecrement_Click;
             // 
             // MainForm
             // 
@@ -893,5 +917,7 @@
         private TextBox textBoxSettingsName;
         private Button buttonSettingsSave;
         private Button buttonReload;
+        private Button buttonIPPluginIncrement;
+        private Button buttonIPPluginDecrement;
     }
 }
